@@ -1,0 +1,9 @@
+{
+    "name": "manager/shared-assets",
+    "description": "Shared server-side PHP dependencies for the Manager systems.",
+    "license": "proprietary",
+    "require": {
+        "dompdf/dompdf": "^3.1",
+        "phpoffice/phpspreadsheet": "^5.8"
+    }
+}
