@@ -1,6 +1,11 @@
 # Dependências compartilhadas
 
-Este diretório centraliza as dependências PHP utilizadas por `manager` e `manager_main`.
+Este diretório centraliza as dependências compartilhadas por `manager` e `manager_main`.
+
+- `vendor/` contém as bibliotecas PHP privadas, carregadas somente pelo servidor.
+- `bootstrap/` contém os arquivos estáticos públicos do Bootstrap e Bootstrap Icons.
+
+O servidor web deve liberar somente arquivos estáticos dentro de `/assets/bootstrap/`. Todos os demais caminhos de `/assets`, incluindo `vendor`, `composer.json` e `composer.lock`, devem permanecer bloqueados.
 
 ## Instalação
 
