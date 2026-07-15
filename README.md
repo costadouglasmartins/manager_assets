@@ -4,8 +4,9 @@ Este diretório centraliza as dependências compartilhadas por `manager` e `mana
 
 - `vendor/` contém as bibliotecas PHP privadas, carregadas somente pelo servidor.
 - `bootstrap/` contém os arquivos estáticos públicos do Bootstrap e Bootstrap Icons.
+- `fullcalendar/` contém os arquivos JavaScript públicos do FullCalendar.
 
-O servidor web deve liberar somente arquivos estáticos dentro de `/assets/bootstrap/`. Todos os demais caminhos de `/assets`, incluindo `vendor`, `composer.json` e `composer.lock`, devem permanecer bloqueados.
+O servidor web deve liberar somente os arquivos estáticos necessários dentro de `/assets/bootstrap/` e os arquivos JavaScript de `/assets/fullcalendar/`. Todos os demais caminhos de `/assets`, incluindo `vendor`, `composer.json` e `composer.lock`, devem permanecer bloqueados.
 
 ## Instalação
 
