@@ -182,6 +182,84 @@ function validateCnpjAlphanumeric(value)
     return cnpj === base + String(digit1) + String(digit2);
   }
 
+(function (window, document) {
+  "use strict";
+
+  const validThemes = ["light", "dark"];
+
+  function readTheme(storageKey)
+    {
+    try
+      {
+      const theme = window.localStorage.getItem(storageKey);
+      return validThemes.includes(theme) ? theme : "light";
+      }
+    catch (error)
+      {
+      return "light";
+      }
+    }
+
+  function saveTheme(storageKey, theme)
+    {
+    try
+      {
+      window.localStorage.setItem(storageKey, theme);
+      }
+    catch (error)
+      {
+      // localStorage may be unavailable due to browser privacy settings.
+      }
+    }
+
+  function updateThemeButton(themeButton, theme)
+    {
+    const themeIcon = themeButton.querySelector("i");
+    const isDarkTheme = theme === "dark";
+    const label = isDarkTheme ? "Alternar para tema claro" : "Alternar para tema escuro";
+
+    if (themeIcon)
+      {
+      themeIcon.className = isDarkTheme ? "bi bi-sun-fill" : "bi bi-moon-fill";
+      }
+
+    themeButton.setAttribute("aria-label", label);
+    themeButton.setAttribute("title", label);
+    }
+
+  function initializeTheme(options)
+    {
+    const storageKey = options.storageKey;
+    const root = document.documentElement;
+    const savedTheme = readTheme(storageKey);
+
+    root.setAttribute("data-bs-theme", savedTheme);
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const themeButton = document.getElementById(options.buttonId || "themeToggle");
+
+      if (!themeButton)
+        {
+        return;
+        }
+
+      updateThemeButton(themeButton, savedTheme);
+
+      themeButton.addEventListener("click", function () {
+        const theme = root.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
+
+        root.setAttribute("data-bs-theme", theme);
+        saveTheme(storageKey, theme);
+        updateThemeButton(themeButton, theme);
+      });
+    });
+    }
+
+  window.AppTheme = {
+    initialize: initializeTheme
+  };
+})(window, document);
+
 function isValidDatePtBr(value) 
   {
     const digits = String(value).replace(/\D/g, "");
