@@ -1,24 +1,15 @@
 <?php return array(
     'root' => array(
-        'name' => '__root__',
+        'name' => 'manager/shared-assets',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '07eca12f1baeacfb75ee0360e9975434e276ed14',
+        'reference' => 'c0a3d15448680b2d9a8928b3247b8fc7c3f3b2b8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '07eca12f1baeacfb75ee0360e9975434e276ed14',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'composer/pcre' => array(
             'pretty_version' => '3.4.0',
             'version' => '3.4.0.0',
@@ -64,6 +55,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'manager/shared-assets' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'c0a3d15448680b2d9a8928b3247b8fc7c3f3b2b8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'markbaker/complex' => array(
             'pretty_version' => '3.0.2',
             'version' => '3.0.2.0',
@@ -88,6 +88,15 @@
             'reference' => 'fcf91eb64359852f00d921887b219479b4f21251',
             'type' => 'library',
             'install_path' => __DIR__ . '/../masterminds/html5',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v7.1.1',
+            'version' => '7.1.1.0',
+            'reference' => '1bc1716a507a65e039d4ac9d9adebbbd0d346e15',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
