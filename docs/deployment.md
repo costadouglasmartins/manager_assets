@@ -51,9 +51,24 @@ a failed health check reports failure without automatic rollback.
 Configure the Secrets and review the synchronization in dry-run mode before
 merging this workflow into `main`. Each subsequent push to `main` deploys that
 commit. A manual run through **Actions > Deploy manager_assets > Run workflow** is also
-available on `main`; runs on other branches do not publish files.
+available on `main`; runs on the setup branch simulate without publishing files.
 
 The workflow does not import databases or restart Nginx, PHP-FPM, or persistent
 application processes. Database schema changes and any long-running PHP worker
 restart must be handled separately when a release requires them. The HTTP health
 checks do not verify every application feature.
+
+## Simulation from the setup branch
+
+A push to `codex/github-deploy` runs the same workflow using the repository SSH
+Secrets in dry-run mode. Files are uploaded only to a private temporary staging
+directory outside the web root; production rsync uses `--dry-run`, and no backup
+directory is created. The staged PHP/dependencies are checked with the production
+runtime, and the existing login pages are checked. Temporary staging files are
+removed at the end. This validates the Secrets and proposed synchronization
+before merging the PRs.
+
+Pushes to `main` publish code. The runner script rejects publication from other
+branches and defaults to simulation when no mode is provided. Manual runs on
+`main` publish; runs on `codex/github-deploy` simulate. Dry-run HTTP checks examine
+the currently deployed applications, not the staged application behavior.
