@@ -1,5 +1,9 @@
 # Dependências compartilhadas
 
+## Deployment
+
+For automatic publication to the existing VPS, see [deployment instructions](docs/deployment.md).
+
 Este diretório centraliza as dependências compartilhadas por `manager` e `manager_main`.
 
 - `vendor/` contém as bibliotecas PHP privadas, carregadas somente pelo servidor.
