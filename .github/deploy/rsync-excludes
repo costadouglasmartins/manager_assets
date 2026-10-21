@@ -10,3 +10,6 @@
 /logs/
 /cache/
 /.deploy-excludes
+/.deploy-validate.py
+/.deploy-repository
+/tests/

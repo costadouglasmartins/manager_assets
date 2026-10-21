@@ -17,7 +17,7 @@ In this repository, open **Settings > Secrets and variables > Actions** and add:
 
 The matching public key must be authorized in `/root/.ssh/authorized_keys`.
 The server host key is pinned in `.github/deploy/known_hosts`.
-PHP, rsync, curl, and flock must be installed on the VPS, and the destination
+PHP, Python 3, rsync, curl, and flock must be installed on the VPS, and the destination
 directory must already exist. PHP-FPM and Nginx must be running.
 
 ## Deployment behavior
@@ -39,9 +39,10 @@ The web server must keep `vendor`, Composer manifests, and other private files
 inaccessible over HTTP, allowing only the public static library paths already
 configured. Runtime data and `.env` files are excluded from synchronization.
 
-Files removed from Git are also removed from production unless excluded by
-`.github/deploy/rsync-excludes`. Replaced and deleted files are backed up under
-`/var/backups/manager_assets/<commit>-<run>-<attempt>`. These are partial file backups,
+Files present only on the server are preserved, including files removed from Git.
+Removing obsolete code now requires a separate reviewed operation. Overwritten
+files are backed up under
+`/var/backups/manager_assets/<commit>-<run>-<attempt>`. These are partial file backups of overwritten files,
 not complete snapshots or database backups. Newly introduced files are not
 included in the backups. The copy is not an atomic switch of the whole tree;
 a failed health check reports failure without automatic rollback.
@@ -72,3 +73,37 @@ Pushes to `main` publish code. The runner script rejects publication from other
 branches and defaults to simulation when no mode is provided. Manual runs on
 `main` publish; runs on `codex/github-deploy` simulate. Dry-run HTTP checks examine
 the currently deployed applications, not the staged application behavior.
+
+## Destination and cleanup protection
+
+Before opening the shared lock, and again after waiting for it and checking PHP,
+the deployment validator checks the exact allowlisted destination for this
+repository. Destination path components must be real directories; aliases,
+symlinks, ancestor aliases, special entries, hard-linked target files, and
+file/directory type conflicts stop publication before production files change.
+New backup paths are also validated and existing backup directories are never
+reused. Missing application directories are not created automatically.
+
+Staging must be a private directory owned by the deploying user under the fixed
+temporary root, with the expected random name and repository marker. Cleanup
+uses Python's symlink-safe directory removal after checking that boundary; it
+does not accept arbitrary server paths. The marker and validator are excluded
+from publication. Python 3 with symlink-safe rmtree support is required.
+
+The synchronization has no delete option. It updates or adds files with backups
+of overwritten files and preserves files present only on the server. These
+checks reduce the impact of path mistakes; they do not establish the cause of
+the earlier incident or replace a complete backup. The SSH account still has
+root privileges; account isolation should be addressed separately.
+
+## Verifying this safety correction
+
+Run `python3 tests/test_deploy_safety.py` locally. The workflow also requires the
+`safety-checks` job to pass on Ubuntu before the deployment job starts. The tests
+use temporary directories only; they do not connect to the VPS.
+
+Push this correction to `codex/guard-deploy-paths` to run the guarded workflow
+against the VPS in dry-run mode. This branch can never select publication mode.
+Review that simulation and its protected paths before merging into `main`.
+Changes to `main` remain real deployments after the prerequisite tests pass.
+Do not treat local success as confirmation of the VPS Python/runtime checks.
