@@ -43,6 +43,15 @@ document.addEventListener("input", function (e)
     {
     applyMaskedValue(e.target, applyDatePtBrMask);
     }
+
+  // Mask for Brazilian currency amounts (e.g. 1.234,56), caret kept at the end
+  if (e.target && e.target.classList.contains("mask-money-br"))
+    {
+    const maskedMoney = applyMoneyBrMask(e.target.value);
+    // Deleting the last digits of a zero amount clears the field instead of leaving "0,00" stuck.
+    const isDeleting = typeof e.inputType === "string" && e.inputType.indexOf("delete") === 0;
+    e.target.value = (isDeleting && maskedMoney === "0,00") ? "" : maskedMoney;
+    }
   });
 
 /**
@@ -68,6 +77,11 @@ document.addEventListener("DOMContentLoaded", function ()
   document.querySelectorAll(".mask-date").forEach(function (el)
     {
     el.value = applyDatePtBrMask(el.value);
+    });
+
+  document.querySelectorAll(".mask-money-br").forEach(function (el)
+    {
+    el.value = applyMoneyBrMask(el.value);
     });
   });
 
@@ -236,4 +250,31 @@ function applyDatePtBrMask(value)
     }
 
   return out;
+  }
+
+/**
+ * Formats a typed value as a Brazilian currency amount without symbol, filling
+ * cents from the right (`5` -> `0,05`, `123456` -> `1.234,56`).
+ * Only an empty value (no digits) returns an empty string; an explicit zero is kept as `0,00`.
+ * Initial values must already be formatted as `1.234,56` (digits-only input is
+ * read as cents).
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+function applyMoneyBrMask(value)
+  {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 12);
+
+  // Only an empty value (no digits) stays empty; an explicit zero is a valid amount shown as 0,00.
+  if (digits === "")
+    {
+    return "";
+    }
+
+  const padded = digits.padStart(3, "0");
+  const cents = padded.slice(-2);
+  const integerPart = padded.slice(0, -2).replace(/^0+(?=\d)/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  return integerPart + "," + cents;
   }
