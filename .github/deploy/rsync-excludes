@@ -1,0 +1,15 @@
+/.git/
+/.github/
+/.mcp/
+/.vscode/
+.DS_Store
+/.env*
+/storage/
+/tmp/
+/uploads/
+/logs/
+/cache/
+/.deploy-excludes
+/.deploy-validate.py
+/.deploy-repository
+/tests/
