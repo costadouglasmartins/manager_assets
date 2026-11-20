@@ -1,0 +1,210 @@
+/* Voice call card shown inside the chat window (or floating when the page has no chat slot). */
+
+.voice-call-slot:empty,
+.voice-call-floating:empty {
+  display: none;
+}
+
+.voice-call-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--app-border, var(--bs-border-color));
+  background: var(--app-surface-solid, var(--bs-body-bg));
+}
+
+.voice-call-floating {
+  position: fixed;
+  top: 76px;
+  right: 16px;
+  z-index: 1090;
+  display: flex;
+  width: min(380px, calc(100vw - 32px));
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.voice-call-floating .voice-call-card {
+  border: 1px solid var(--app-border, var(--bs-border-color));
+  background: var(--app-surface-solid, var(--bs-body-bg));
+  box-shadow: var(--app-shadow, 0 0.5rem 1.5rem rgba(15, 23, 42, 0.18));
+}
+
+.voice-call-card {
+  --voice-call-accent: #16a34a;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--app-text, var(--bs-body-color));
+}
+
+.voice-call-card[data-phase="incoming"] {
+  --voice-call-accent: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.voice-call-card[data-phase="ended"] {
+  --voice-call-accent: #64748b;
+  background: rgba(100, 116, 139, 0.12);
+}
+
+.voice-call-card[data-phase="unstable"] {
+  --voice-call-accent: #d97706;
+  background: rgba(217, 119, 6, 0.12);
+}
+
+.voice-call-card-avatar {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--voice-call-accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.voice-call-card[data-phase="incoming"] .voice-call-card-avatar,
+.voice-call-card[data-phase="ringing"] .voice-call-card-avatar {
+  animation: voice-call-pulse 1.4s ease-out infinite;
+}
+
+.voice-call-card-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.voice-call-card-name {
+  overflow: hidden;
+  font-size: 0.92rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.voice-call-card-status {
+  color: var(--app-muted, var(--bs-secondary-color));
+  font-size: 0.8rem;
+}
+
+[data-voice-call-timer] {
+  font-variant-numeric: tabular-nums;
+}
+
+.voice-call-card-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.voice-call-card-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.voice-call-icon-button {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--app-border, var(--bs-border-color));
+  border-radius: 50%;
+  background: var(--app-surface-solid, var(--bs-body-bg));
+  color: var(--app-text, var(--bs-body-color));
+}
+
+.voice-call-icon-button:hover:not(:disabled),
+.voice-call-icon-button:focus-visible {
+  border-color: var(--voice-call-accent);
+  outline: none;
+}
+
+.voice-call-icon-button[aria-pressed="true"] {
+  border-color: #d97706;
+  background: #d97706;
+  color: #fff;
+}
+
+.voice-call-icon-button.is-danger {
+  border-color: #dc2626;
+  background: #dc2626;
+  color: #fff;
+}
+
+.voice-call-icon-button.is-danger:hover,
+.voice-call-icon-button.is-danger:focus-visible {
+  border-color: #b91c1c;
+  background: #b91c1c;
+}
+
+.voice-call-icon-button:disabled {
+  opacity: 0.5;
+}
+
+/* "Call" buttons in the chat headers. */
+.voice-call-start[hidden] {
+  display: none !important;
+}
+
+.chat-header-current .voice-call-start {
+  margin-left: auto;
+}
+
+.voice-call-start:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* The chat toggle signals a ringing or ongoing call while the panel is closed. */
+.voice-call-live {
+  animation: voice-call-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes voice-call-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45); }
+  100% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+}
+
+@keyframes voice-call-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.55); }
+  50% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voice-call-card-avatar,
+  .voice-call-live {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Answer / Decline carry text: give them their own row on phones. */
+  .voice-call-card[data-phase="incoming"] {
+    flex-wrap: wrap;
+  }
+
+  .voice-call-card[data-phase="incoming"] .voice-call-card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .voice-call-floating {
+    top: 64px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+  }
+}
